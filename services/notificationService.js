@@ -16,7 +16,11 @@ function parseVcbAccountTransfer(message) {
 
   const { groups } = match;
   const type = groups.sign === '+' ? 'Income' : 'Expense';
-  const amount = parseInt(groups.amount.replace(/,/g, ''), 10);
+  let amount = parseInt(groups.amount.replace(/,/g, ''), 10);
+
+  if (type === 'Expense') {
+    amount = -amount;
+  }
 
   return {
     amount,
@@ -46,7 +50,7 @@ function parseVcbCreditCard(message) {
 
   // Card transactions are always expenses
   const type = 'Expense';
-  const amount = parseInt(groups.amount.replace(/,/g, ''), 10);
+  let amount = -parseInt(groups.amount.replace(/,/g, ''), 10);
 
   // Note: If the currency is not VND, you might want to add a conversion step later.
   // For now, we record the original amount and currency.
